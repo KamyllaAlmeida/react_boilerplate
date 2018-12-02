@@ -28,6 +28,22 @@ class App extends Component {
       currentUser: {name: 'Kamylla'},
       messages: messages
     }
+    this.newMessage = this.newMessage.bind(this);
+  }
+
+
+  newMessage(event) {
+    event.preventDefault();
+    const username = event.target.elements['username'].value || this.state.currentUser.name;
+    const content = event.target.elements['message'].value;
+    const message = {
+      username,
+      content,
+      type: 'incomingMessage',
+    };
+    event.target.elements['message'].value = '';
+    const messages = [...this.state.messages, message];
+    this.setState({ messages })
   }
 
   componentDidMount() {
@@ -48,7 +64,7 @@ class App extends Component {
       <div>
         <NavBar/>
         <MessageList  messages = {this.state.messages}/>
-        <ChatBar currentUser ={this.state.currentUser}/>
+        <ChatBar currentUser ={this.state.currentUser} newMessage={ this.newMessage } />
       </div>
     );
   }
