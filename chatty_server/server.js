@@ -1,5 +1,4 @@
-// server.js
-
+const WebSocket = require('ws');
 const express = require('express');
 const SocketServer = require('ws').Server;
 const uuidv1 = require('uuid/v1');
@@ -36,15 +35,39 @@ function broadcast(data) {
 wss.on('connection', function connection(ws) {
   console.log('Client connected');
   ws.on('message', function incoming(data) {
-    //console.log("Servidor recebeu", data);
-    // Broadcast to everyone else.
-    const message = JSON.parse(data);
-    broadcast(message); 
-      
-  
+    // Broadcast to all.
+  console.log("Client sent data ", data);
+    wss.clients.forEach(function each(client) {
+      if (client.readyState === WebSocket.OPEN) {
+        console.log("Entrou");
+        client.send(data);
+      }
+    });
   });
 });
 
+
+/* const wss = new WebSocket.Server({ port: 8080 });
+
+// Broadcast to all.
+wss.broadcast = function broadcast(data) {
+  wss.clients.forEach(function each(client) {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(data);
+    }
+  });
+};
+
+wss.on('connection', function connection(ws) {
+  ws.on('message', function incoming(data) {
+    // Broadcast to everyone else.
+    wss.clients.forEach(function each(client) {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        client.send(data);
+      }
+    });
+  });
+}); */
 
 
 

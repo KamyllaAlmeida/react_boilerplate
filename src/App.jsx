@@ -3,30 +3,14 @@ import NavBar from './NavBar.jsx';
 import ChatBar from './ChatBar.jsx';
 import MessageList from './MessageList.jsx';
 
-
-const  messages= [
-  {
-    username: "Bob",
-    content: "Has anyone seen my marbles?",
-    id: 1,
-    type: " "
-
-  },
-  {
-    username: "Anonymous",
-    content: "No, I think you lost them. You lost your marbles Bob. You lost them for good.",
-    id: 2,
-    type: " "
-  }
-];
-
 class App extends Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       currentUser: {name: 'Kamylla'},
-      messages: messages
+      messages: [],
+      socket: {}
     }
     this.newMessage = this.newMessage.bind(this);
   }
@@ -34,29 +18,37 @@ class App extends Component {
 
   newMessage(event) {
     event.preventDefault();
-    const username = event.target.elements['username'].value || this.state.currentUser.name;
+    const username = event.target.elements['username'].value;
+    if (username !== this.state.currentUser.name) {
+      const message = {
+        type: 'incomingNotification',
+        content: `${this.state.currentUser.name} has changed their name to ${username}`
+      }
+      this.state.socket.send(JSON.stringify(message));
+      this.setState({ currentUser: { name: username }});
+    }
     const content = event.target.elements['message'].value;
-    const message = {
-      username,
-      content,
-      type: 'incomingMessage',
-    };
-    event.target.elements['message'].value = '';
-    const messages = [...this.state.messages, message];
-    this.setState({ messages })
+    if (content.length > 0) {
+      const message = {
+        username,
+        content,
+        type: 'incomingMessage'
+      };
+      event.target.elements['message'].value = '';
+      this.state.socket.send(JSON.stringify(message));
+    }
   }
 
+
   componentDidMount() {
-    console.log("componentDidMount <App />");
-    setTimeout(() => {
-      console.log("Simulating incoming message");
-      // Add a new message to the list of messages in the data store
-      const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
-      const messages = this.state.messages.concat(newMessage)
-      // Update the state of the app component.
-      // Calling setState will trigger a call to render() in App and all child components.
-      this.setState({messages: messages})
-    }, 3000);
+    var webSocket = new WebSocket("ws:/localhost:3001");
+    webSocket.onmessage = ({ data }) => {
+      console.log("Data cliente", data);
+      const oldMessages = this.state.messages;
+      const messages = [...oldMessages, JSON.parse(data) ];
+      this.setState({ messages });
+    };
+    this.setState({ socket: webSocket });
   }
   
   render() {
