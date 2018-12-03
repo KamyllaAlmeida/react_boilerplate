@@ -47,6 +47,11 @@ class App extends Component {
       if(!isNaN(data)) {
         this.setState({clientsConnected: data});
       }
+      if (JSON.parse(data).currentUsers) {
+        this.setState({
+          currentUsers: JSON.parse(data).currentUsers
+        });
+      }
       const oldMessages = this.state.messages;
       const messages = [...oldMessages, JSON.parse(data) ];
       this.setState({ messages });

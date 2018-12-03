@@ -1,7 +1,11 @@
-React Boilerplate
+Chatty App
 =====================
 
-A minimal and light dev environment for ReactJS.
+Chatty app allows users to communicate with each other without having to register accounts. It uses React, a popular front-end library created and used heavily by Facebook as well as modern tools for Node including Webpack and Babel.
+
+## Final App
+
+[Chatty page](/img/page.png)
 
 ### Usage
 
@@ -15,10 +19,22 @@ git remote add origin [YOUR NEW REPOSITORY]
 # Manually update your package.json file
 ```
 
-Install the dependencies and start the server.
+Install the dependencies.
 
 ```
 npm install
+```
+
+Start the websocket server.
+
+```
+cd chatty_server
+npm start
+```
+Then start the client server.
+
+```
+On the main folder.
 npm start
 open http://localhost:3000
 ```
