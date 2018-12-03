@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 
 class Message extends Component {
   render() {
-    const {type, content, username} = this.props.message;
+    const {id, type, content, username} = this.props.message;
     return (
-      <div className="message">
+      <div className="message" key={id}>
         <span className="message-username">{username}</span>
         <span className="message-content">{content}</span>
       </div>

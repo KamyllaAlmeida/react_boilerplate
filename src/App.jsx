@@ -10,7 +10,8 @@ class App extends Component {
     this.state = {
       currentUser: {name: 'Kamylla'},
       messages: [],
-      socket: {}
+      socket: {},
+      clientsConnected: 0
     }
     this.newMessage = this.newMessage.bind(this);
   }
@@ -43,7 +44,9 @@ class App extends Component {
   componentDidMount() {
     var webSocket = new WebSocket("ws:/localhost:3001");
     webSocket.onmessage = ({ data }) => {
-      console.log("Data cliente", data);
+      if(!isNaN(data)) {
+        this.setState({clientsConnected: data});
+      }
       const oldMessages = this.state.messages;
       const messages = [...oldMessages, JSON.parse(data) ];
       this.setState({ messages });
@@ -54,7 +57,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <NavBar/>
+        <NavBar clientsConnected = {this.state.clientsConnected}/>
         <MessageList  messages = {this.state.messages}/>
         <ChatBar currentUser ={this.state.currentUser} newMessage={ this.newMessage } />
       </div>
