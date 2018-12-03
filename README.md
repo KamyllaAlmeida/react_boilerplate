@@ -5,7 +5,7 @@ Chatty app allows users to communicate with each other without having to registe
 
 ## Final App
 
-[Chatty page](/img/page.png)
+![Alt text](/img/page.png "Chatty page")
 
 ### Usage
 
